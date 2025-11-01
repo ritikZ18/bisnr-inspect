@@ -1,24 +1,85 @@
-# Byte-compiled / optimized / DLL files
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build and output
+dist/
+build/
+output/
+coverage/
+logs/
+*.log
+
+# Puppeteer/Chromium cache
+.cache/
+.puppeteer/
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Environments
-.env
-.venv
+# Virtual environments
+.env/
+.venv/
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
-# Editor files
+# Python build artifacts
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Editors and OS files
 .vscode/
 .idea/
-
-# OS-specific files
+*.swp
+*.swo
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Test and temp files
+__tests__/
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Custom project folders
+data/
+inspection.json
+*.pdf
+*.csv
+structure_report.txt
+
+# Keep templates and source tracked
+!templates/
+!src/

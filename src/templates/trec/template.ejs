@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PROPERTY INSPECTION REPORT FORM</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 0.5in;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.4;
+      color: #000;
+    }
+    
+    .header-box {
+      border: 2px solid #000;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .header-box h1 {
+      text-align: center;
+      font-size: 14pt;
+      margin: 10px 0;
+    }
+    
+    .trec-logo {
+      text-align: center;
+      font-weight: bold;
+      font-size: 24pt;
+      margin-bottom: 10px;
+    }
+    
+    .property-info {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .property-info .row {
+      display: table-row;
+    }
+    
+    .property-info .label {
+      display: table-cell;
+      width: 30%;
+      padding: 5px;
+      border-bottom: 1px solid #000;
+      font-weight: bold;
+    }
+    
+    .property-info .value {
+      display: table-cell;
+      padding: 5px;
+      border-bottom: 1px solid #000;
+    }
+    
+    .section {
+      page-break-inside: avoid;
+      margin-bottom: 20px;
+      border: 1px solid #000;
+    }
+    
+    .section-header {
+      background-color: #e0e0e0;
+      padding: 8px;
+      font-weight: bold;
+      border-bottom: 1px solid #000;
+    }
+    
+    .section-content {
+      padding: 10px;
+    }
+    
+    .checkbox-row {
+      margin: 10px 0;
+    }
+    
+    .checkbox {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 1px solid #000;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    
+    .checkbox.checked::after {
+      content: "✓";
+      display: block;
+      text-align: center;
+      line-height: 12px;
+      font-weight: bold;
+    }
+    
+    .line-item {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    
+    .line-item-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .comment {
+      margin: 5px 0;
+      padding-left: 20px;
+    }
+    
+    .images {
+      margin: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .images img {
+      max-width: 200px;
+      max-height: 150px;
+      border: 1px solid #ccc;
+    }
+    
+    .page-break {
+      page-break-after: always;
+    }
+    
+    .notice-box {
+      border: 1px solid #000;
+      padding: 10px;
+      margin: 20px 0;
+      font-size: 9pt;
+    }
+    
+    .notice-box h3 {
+      font-size: 10pt;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cover Page -->
+  <div class="header-box">
+    <div class="trec-logo">TREC</div>
+    <h1>PROPERTY INSPECTION REPORT FORM</h1>
+    
+    <div class="property-info">
+      <div class="row">
+        <div class="label">Name of Client:</div>
+        <div class="value"><%= data.property.client %></div>
+        <div class="label">Date of Inspection:</div>
+        <div class="value"><%= formatDate(data.property.inspectionDate) %></div>
+      </div>
+      <div class="row">
+        <div class="label">Address of Inspected Property:</div>
+        <div class="value" colspan="3"><%= data.property.address %></div>
+      </div>
+      <div class="row">
+        <div class="label">Name of Inspector:</div>
+        <div class="value"><%= data.property.inspector %></div>
+        <div class="label">TREC License #:</div>
+        <div class="value">12345</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purpose and Scope -->
+  <div class="notice-box">
+    <h3>PURPOSE OF INSPECTION</h3>
+    <p>A real estate inspection is a visual survey of a structure and a basic performance evaluation of the systems and components of a building. It provides information regarding the general condition of a residence at the time the inspection was conducted.</p>
+    <p>It is important that you carefully read ALL of this information. Ask the inspector to clarify any items or comments that are unclear.</p>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- Inspection Report Sections -->
+  <h2>INSPECTION REPORT</h2>
+  
+  <% data.sections.forEach((section, sectionIndex) => { %>
+    <div class="section">
+      <div class="section-header">
+        <%= String.fromCharCode(65 + sectionIndex) %>. <%= section.name %>
+      </div>
+      <div class="section-content">
+        <% section.lineItems.forEach(item => { %>
+          <div class="line-item">
+            <div class="checkbox-row">
+              <span class="checkbox <%= getCheckboxClass(item.status, 'I') %>"></span> I=Inspected
+              <span class="checkbox <%= getCheckboxClass(item.status, 'NI') %>"></span> NI=Not Inspected
+              <span class="checkbox <%= getCheckboxClass(item.status, 'NP') %>"></span> NP=Not Present
+              <span class="checkbox <%= getCheckboxClass(item.status, 'D') %>"></span> D=Deficient
+            </div>
+            
+            <div class="line-item-name"><%= item.name %></div>
+            
+            <% if (item.comments && item.comments.length > 0) { %>
+              <div class="comments">
+                Comments:
+                <% item.comments.forEach(comment => { %>
+                  <div class="comment">
+                    <%= comment.text || 'Data not found in test data' %>
+                  </div>
+                  
+                  <% if (comment.photos && comment.photos.length > 0) { %>
+                    <div class="images">
+                      <% comment.photos.slice(0, 3).forEach(photo => { %>
+                        <img src="<%= photo %>" alt="Inspection Photo" />
+                      <% }) %>
+                    </div>
+                  <% } %>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="comment">Data not found in test data</div>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  <% }) %>
+
+  <!-- Additional Information -->
+  <div class="notice-box">
+    <h3>ADDITIONAL INFORMATION PROVIDED BY INSPECTOR</h3>
+    <p>This report is provided for the sole use of the client named herein. No other persons should rely upon the information contained in this report without prior written consent.</p>
+    <p>Total Items Inspected: <%= data.summary.totalItems %></p>
+    <p>Items Marked Deficient: <%= data.summary.deficientItems %></p>
+  </div>
+</body>
+</html>
