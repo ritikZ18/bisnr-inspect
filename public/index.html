@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binsr Inspect Report Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center p-8">
+
+  <!-- Header with logo -->
+  <header class="flex flex-col items-center mb-8">
+    <img src="/assets/logo-bisnr-inspect.png" alt="Binsr Inspect Logo" class="bg-black w-24 h-24 mb-4 " onerror="this.style.display='none'">
+    <h1 class="text-3xl font-bold text-blue-600">Binsr Inspect Report Generator</h1>
+    <p class="text-gray-600 mt-1 text-sm">Automated TREC & Custom Home Inspection Reports</p>
+  </header>
+
+  <main class="bg-white shadow-lg rounded-lg p-6 w-full max-w-5xl">
+    <div class="text-center mb-6">
+      <p class="text-gray-700 mb-4">
+        Click below to generate the TREC and Custom Reports from 
+        <code class="text-blue-500 font-semibold">inspection.json</code>.
+      </p>
+      <button id="generateBtn"
+        class="px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold transition">
+        Generate Reports
+      </button>
+      <p id="status" class="mt-4 text-gray-700 text-sm"></p>
+    </div>
+
+    <!-- 2×3 Preview Grid -->
+    <div id="gridContainer" class="grid grid-cols-2 gap-8 hidden">
+      <!-- TREC Report Box -->
+      <div class="bg-gray-50 border rounded-lg shadow p-4 flex flex-col">
+        <h2 class="text-lg font-semibold text-blue-700 mb-3">TREC Report</h2>
+        <iframe id="trecPreview" class="w-full flex-1 border rounded mb-3" style="min-height: 400px;"></iframe>
+        <div class="flex justify-between">
+          <a id="trecViewBtn" target="_blank"
+             class="w-1/2 text-center py-2 mr-2 bg-green-600 hover:bg-green-700 text-white rounded transition">
+            View
+          </a>
+          <a id="trecDownloadBtn" download
+             class="w-1/2 text-center py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+            Download
+          </a>
+        </div>
+      </div>
+
+      <!-- Custom Report Box -->
+      <div class="bg-gray-50 border rounded-lg shadow p-4 flex flex-col">
+        <h2 class="text-lg font-semibold text-blue-700 mb-3">Custom Report</h2>
+        <iframe id="customPreview" class="w-full flex-1 border rounded mb-3" style="min-height: 400px;"></iframe>
+        <div class="flex justify-between">
+          <a id="customViewBtn" target="_blank"
+             class="w-1/2 text-center py-2 mr-2 bg-green-600 hover:bg-green-700 text-white rounded transition">
+            View
+          </a>
+          <a id="customDownloadBtn" download
+             class="w-1/2 text-center py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+            Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-10 text-sm text-gray-500 text-center">
+    © 2025 Binsr Inspect — Built with Node.js, Puppeteer, and EJS
+  </footer>
+
+  <script>
+    const generateBtn = document.getElementById('generateBtn');
+    const statusEl = document.getElementById('status');
+    const gridContainer = document.getElementById('gridContainer');
+    const trecPreview = document.getElementById('trecPreview');
+    const customPreview = document.getElementById('customPreview');
+    const trecViewBtn = document.getElementById('trecViewBtn');
+    const customViewBtn = document.getElementById('customViewBtn');
+    const trecDownloadBtn = document.getElementById('trecDownloadBtn');
+    const customDownloadBtn = document.getElementById('customDownloadBtn');
+
+    generateBtn.addEventListener('click', async () => {
+      statusEl.textContent = '⏳ Generating reports... please wait.';
+      gridContainer.classList.add('hidden');
+
+      try {
+        const res = await fetch('/generate-reports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            inputFile: 'data/inspection.json',
+            generateCustom: true
+          })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          const trecPath = `/${result.files.trec}`;
+          const customPath = `/${result.files.custom}`;
+          
+          // Update preview + links
+          trecPreview.src = trecPath;
+          customPreview.src = customPath;
+          trecViewBtn.href = trecPath;
+          customViewBtn.href = customPath;
+          trecDownloadBtn.href = trecPath;
+          customDownloadBtn.href = customPath;
+
+          statusEl.textContent = `✅ Generated successfully in ${result.duration}`;
+          gridContainer.classList.remove('hidden');
+        } else {
+          statusEl.textContent = `❌ Error: ${result.error}`;
+        }
+      } catch (err) {
+        statusEl.textContent = `❌ Failed: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,8 +1,15 @@
-import express, { json, staticS } from 'express';
-import path from 'path';
+import express from 'express';
 import fs from 'fs';
-import { generateReports } from './controllers/reportController.js';
+import ReportController  from './controllers/reportController.js';
 import { createLogger, format as _format, transports as _transports } from 'winston';
+
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 
 // Configure logger
 const logger = createLogger({
@@ -12,6 +19,7 @@ const logger = createLogger({
     new _transports.Console({
       format: _format.simple()
     }),
+     new _transports.Console({ format: _format.simple() }),
     new _transports.File({ filename: 'error.log', level: 'error' }),
     new _transports.File({ filename: 'combined.log' })
   ]
@@ -20,11 +28,13 @@ const logger = createLogger({
 global.logger = logger;
 
 const app = express();
-app.use(json());
-app.use(staticS('public'));
+app.use(express.json());
+
+app.use(express.static('public'));
+app.use('/output', express.static(path.join(__dirname, '../output')));
 
 // Routes
-app.post('/generate-reports', generateReports);
+app.post('/generate-reports',(req,res) =>  ReportController.generateReports(req,res));
 app.get('/health', (req, res) => res.json({ status: 'healthy' }));
 
 const PORT = process.env.PORT || 3000;
