@@ -136,7 +136,7 @@ class CustomReportService {
     }));
   }
 
-  async renderTemplate(data) {
+  async renderTemplate(data, ) {
     const templatePath = join(__dirname, '../templates/custom/template.ejs');
     const template = await fs.readFile(templatePath, 'utf8');
     

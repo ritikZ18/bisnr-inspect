@@ -1,234 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>PROPERTY INSPECTION REPORT FORM</title>
-  <style>
-    @page {
-      size: letter;
-      margin: 0.5in;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 10pt;
-      line-height: 1.4;
-      color: #000;
-    }
-    
-    .header-box {
-      border: 2px solid #000;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-    
-    .header-box h1 {
-      text-align: center;
-      font-size: 14pt;
-      margin: 10px 0;
-    }
-    
-    .trec-logo {
-      text-align: center;
-      font-weight: bold;
-      font-size: 24pt;
-      margin-bottom: 10px;
-    }
-    
-    .property-info {
-      display: table;
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    .property-info .row {
-      display: table-row;
-    }
-    
-    .property-info .label {
-      display: table-cell;
-      width: 30%;
-      padding: 5px;
-      border-bottom: 1px solid #000;
-      font-weight: bold;
-    }
-    
-    .property-info .value {
-      display: table-cell;
-      padding: 5px;
-      border-bottom: 1px solid #000;
-    }
-    
-    .section {
-      page-break-inside: avoid;
-      margin-bottom: 20px;
-      border: 1px solid #000;
-    }
-    
-    .section-header {
-      background-color: #e0e0e0;
-      padding: 8px;
-      font-weight: bold;
-      border-bottom: 1px solid #000;
-    }
-    
-    .section-content {
-      padding: 10px;
-    }
-    
-    .checkbox-row {
-      margin: 10px 0;
-    }
-    
-    .checkbox {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 1px solid #000;
-      margin-right: 5px;
-      vertical-align: middle;
-    }
-    
-    .checkbox.checked::after {
-      content: "✓";
-      display: block;
-      text-align: center;
-      line-height: 12px;
-      font-weight: bold;
-    }
-    
-    .line-item {
-      margin: 15px 0;
-      padding-left: 20px;
-    }
-    
-    .line-item-name {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    
-    .comment {
-      margin: 5px 0;
-      padding-left: 20px;
-    }
-    
-    .images {
-      margin: 10px 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    
-    .images img {
-      max-width: 200px;
-      max-height: 150px;
-      border: 1px solid #ccc;
-    }
-    
-    .page-break {
-      page-break-after: always;
-    }
-    
-    .notice-box {
-      border: 1px solid #000;
-      padding: 10px;
-      margin: 20px 0;
-      font-size: 9pt;
-    }
-    
-    .notice-box h3 {
-      font-size: 10pt;
-      margin-top: 0;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>TREC Inspection Report</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+@media print {
+  .page-break { page-break-before: always; }
+
+  .print-header, .print-footer {
+    position: fixed;
+    left: 0; right: 0;
+    font-size: 11px;
+    background: white;
+    z-index: 999;
+  }
+
+  .print-header {
+    top: 0;
+    padding: 6px 0;
+    border-bottom: 1px solid #000;
+  }
+
+  .print-footer {
+    bottom: 0;
+    padding: 6px 0;
+    border-top: 1px solid #000;
+  }
+
+  body {
+    margin-top: 90px; 
+    margin-bottom: 70px;
+  }
+}
+</style>
 </head>
-<body>
-  <!-- Cover Page -->
-  <div class="header-box">
-    <div class="trec-logo">TREC</div>
-    <h1>PROPERTY INSPECTION REPORT FORM</h1>
-    
-    <div class="property-info">
-      <div class="row">
-        <div class="label">Name of Client:</div>
-        <div class="value"><%= data.property.client %></div>
-        <div class="label">Date of Inspection:</div>
-        <div class="value"><%= formatDate(data.property.inspectionDate) %></div>
-      </div>
-      <div class="row">
-        <div class="label">Address of Inspected Property:</div>
-        <div class="value" colspan="3"><%= data.property.address %></div>
-      </div>
-      <div class="row">
-        <div class="label">Name of Inspector:</div>
-        <div class="value"><%= data.property.inspector %></div>
-        <div class="label">TREC License #:</div>
-        <div class="value">12345</div>
-      </div>
+
+<body class="font-serif text-base leading-relaxed">
+
+<!-- ===== 🧾 PAGE HEADER (Repeats every page) ===== -->
+<div class="print-header text-center">
+  <div class="font-bold">
+    Report Identification: <%= data.property.address %> — <%= formatDate(data.property.inspectionDate) %>
+  </div>
+  <div>
+    I=Inspected &nbsp;&nbsp; NI=Not Inspected &nbsp;&nbsp;
+    NP=Not Present &nbsp;&nbsp; D=Deficient
+  </div>
+</div>
+
+<div class="container mx-auto p-8">
+
+<!-- ===== DOCUMENT TITLE ===== -->
+<header class="text-center mb-8">
+  <h1 class="text-3xl font-bold">TREC PROPERTY INSPECTION REPORT</h1>
+</header>
+
+
+
+<!-- ===== PROPERTY INFO ===== -->
+<div class="border border-black mt-10 mb-8 text-sm leading-tight w-full">
+
+  <div class="flex border-b border-black">
+    <div class="w-1/2 p-2 border-r border-black">
+      <div class="font-semibold">Buyer Name</div>
+      <div><%= data.property.client %></div>
+    </div>
+    <div class="w-1/2 p-2">
+      <div class="font-semibold">Date of Inspection</div>
+      <div><%= formatDateTime(data.property.inspectionDate) %></div>
     </div>
   </div>
 
-  <!-- Purpose and Scope -->
-  <div class="notice-box">
-    <h3>PURPOSE OF INSPECTION</h3>
-    <p>A real estate inspection is a visual survey of a structure and a basic performance evaluation of the systems and components of a building. It provides information regarding the general condition of a residence at the time the inspection was conducted.</p>
-    <p>It is important that you carefully read ALL of this information. Ask the inspector to clarify any items or comments that are unclear.</p>
+  <div class="flex border-b border-black">
+    <div class="w-1/2 p-2 border-r border-black">
+      <div class="font-semibold">Name of Client</div>
+      <div><%= data.property.client %></div>
+    </div>
+    <div class="w-1/2 p-2">
+      <div class="font-semibold">TREC License #</div>
+      <div><%= data.property.inspectorLicense || "_____" %></div>
+    </div>
   </div>
 
-  <div class="page-break"></div>
+  <div class="flex border-b border-black">
+    <div class="w-1/2 p-2 border-r border-black">
+      <div class="font-semibold">Address of Inspected Property</div>
+      <div><%= data.property.address %></div>
+    </div>
+    <div class="w-1/2 p-2">
+      <div class="font-semibold">TREC License #</div>
+      <div>____</div>
+    </div>
+  </div>
 
-  <!-- Inspection Report Sections -->
-  <h2>INSPECTION REPORT</h2>
-  
-  <% data.sections.forEach((section, sectionIndex) => { %>
-    <div class="section">
-      <div class="section-header">
-        <%= String.fromCharCode(65 + sectionIndex) %>. <%= section.name %>
-      </div>
-      <div class="section-content">
-        <% section.lineItems.forEach(item => { %>
-          <div class="line-item">
-            <div class="checkbox-row">
-              <span class="checkbox <%= getCheckboxClass(item.status, 'I') %>"></span> I=Inspected
-              <span class="checkbox <%= getCheckboxClass(item.status, 'NI') %>"></span> NI=Not Inspected
-              <span class="checkbox <%= getCheckboxClass(item.status, 'NP') %>"></span> NP=Not Present
-              <span class="checkbox <%= getCheckboxClass(item.status, 'D') %>"></span> D=Deficient
-            </div>
-            
-            <div class="line-item-name"><%= item.name %></div>
-            
-            <% if (item.comments && item.comments.length > 0) { %>
-              <div class="comments">
-                Comments:
-                <% item.comments.forEach(comment => { %>
-                  <div class="comment">
-                    <%= comment.text || 'Data not found in test data' %>
-                  </div>
-                  
-                  <% if (comment.photos && comment.photos.length > 0) { %>
-                    <div class="images">
-                      <% comment.photos.slice(0, 3).forEach(photo => { %>
-                        <img src="<%= photo %>" alt="Inspection Photo" />
-                      <% }) %>
-                    </div>
-                  <% } %>
-                <% }) %>
-              </div>
-            <% } else { %>
-              <div class="comment">Data not found in test data</div>
-            <% } %>
-          </div>
+  <div class="flex border-b border-black">
+    <div class="w-1/2 p-2 border-r border-black">
+      <div class="font-semibold">Name of Inspector</div>
+      <div><%= data.property.inspector %></div>
+    </div>
+    <div class="w-1/2 p-2">
+      <div class="font-semibold">TREC License #</div>
+      <div><%= data.property.inspectorLicense || "_____" %></div>
+    </div>
+  </div>
+
+  <div class="flex">
+    <div class="w-1/2 p-2 border-r border-black">
+      <div class="font-semibold">Name of Sponsor (if applicable)</div>
+      <div><%= data.property.sponsor || "N/A" %></div>
+    </div>
+    <div class="w-1/2 p-2">
+      <!-- blank cell intentionally -->
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ===== INTRO ===== -->
+<div class="mb-8">
+  <p><strong>PURPOSE OF INSPECTION:</strong>
+  This inspection is a visual survey… Ask the inspector to clarify any items or comments that are unclear.</p>
+</div>
+
+<!-- ===== LEGEND ===== -->
+<div class="legend mb-8 p-4 border border-gray-300 rounded">
+  <p><strong>I</strong> = Inspected,
+     <strong>NI</strong> = Not Inspected,
+     <strong>NP</strong> = Not Present,
+     <strong>D</strong> = Deficient</p>
+</div>
+
+<!-- ===== SECTIONS LOOP ===== -->
+<% data.sections.forEach(section => { %>
+
+<div class="section mb-10 page-break">
+  <h2 class="text-xl font-bold border-b-2 border-gray-300 pb-2 mb-4">
+    <%= section.name %>
+  </h2>
+
+  <% section.lineItems.forEach(item => { %>
+  <div class="mb-6">
+
+    <!-- Line Item Header -->
+    <div class="flex justify-between items-center">
+      <h3 class="text-lg font-semibold"><%= item.name %></h3>
+
+      <!-- PDF Style Checkboxes -->
+      <div class="flex space-x-6 text-lg font-bold">
+        <% ['I','NI','NP','D'].forEach(code => { %>
+        <span class="flex items-center space-x-1">
+          <% if (item.status === code) { %><span>☑</span><% } else { %><span>☐</span><% } %>
+          <span><%= code %></span>
+        </span>
         <% }) %>
       </div>
     </div>
+
+    <!-- Severity Label -->
+    <% if (item.category) { %>
+      <div class="mt-1 text-sm font-semibold
+        <% if (item.category=='Minor') { %>text-blue-600<% } %>
+        <% if (item.category=='Marginal') { %>text-orange-600<% } %>
+        <% if (item.category=='Major') { %>text-red-600<% } %>">
+
+        <% if (item.category=='Minor') { %>⚙️ Minor Concerns / FYI<% } %>
+        <% if (item.category=='Marginal') { %>⚠️ Marginal Concerns<% } %>
+        <% if (item.category=='Major') { %>⛔ Significant / Major Concerns<% } %>
+      </div>
+    <% } %>
+
+    <!-- Comments + Photos -->
+    <% if (item.comments && item.comments.length) { %>
+      <div class="mt-2 pl-4 border-l-2 border-gray-300">
+
+        <% item.comments.forEach(comment => { %>
+
+          <p class="text-gray-800 mb-2"><%= comment.text %></p>
+
+          <% if (comment.photos && comment.photos.length) { %>
+          <div class="grid grid-cols-3 gap-2 mt-2">
+            <% comment.photos.forEach(photo => { %>
+              <img
+                src="<%= photo.url %>"
+                alt="Photo"
+                class="w-full h-auto rounded shadow border border-gray-300"
+              />
+            <% }) %>
+          </div>
+          <% } %>
+
+        <% }) %>
+
+      </div>
+    <% } %>
+
+  </div>
   <% }) %>
 
-  <!-- Additional Information -->
-  <div class="notice-box">
-    <h3>ADDITIONAL INFORMATION PROVIDED BY INSPECTOR</h3>
-    <p>This report is provided for the sole use of the client named herein. No other persons should rely upon the information contained in this report without prior written consent.</p>
-    <p>Total Items Inspected: <%= data.summary.totalItems %></p>
-    <p>Items Marked Deficient: <%= data.summary.deficientItems %></p>
-  </div>
+</div>
+
+<% }) %>
+
+</div>
+
+<!-- ===== FOOTER (Repeats every page) ===== -->
+<div class="print-footer text-center text-xs">
+  REI 7-6 (8/9/2021) • Promulgated by the Texas Real Estate Commission • (512) 936-3000 • www.trec.texas.gov
+  <br/>
+  Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const pages = document.querySelectorAll(".page-break");
+  document.querySelectorAll(".totalPages").forEach(el => el.textContent = pages.length);
+});
+
+// function formatDateTime(date) {
+//   return new Date(date).toLocaleString("en-US", {
+//     month: "2-digit",
+//     day: "2-digit",
+//     year: "numeric",
+//     hour: "numeric",
+//     minute: "2-digit",
+//   });
+// }
+
+</script>
+
 </body>
 </html>

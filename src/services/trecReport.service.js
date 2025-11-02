@@ -16,6 +16,18 @@ class TrecReportService {
     this.imageProcessor = new ImageProcessorService();
   }
 
+  formatDateTime(date) {
+  if (!date) return '';
+  return new Date(date).toLocaleString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+
   async generateReport(inspectionData) {
     try {
       // Process images for embedding
@@ -72,8 +84,9 @@ class TrecReportService {
     
     return render(template, { 
       data,
-      formatDate: this.formatDate,
-      getCheckboxClass: this.getCheckboxClass
+       formatDate: this.formatDate.bind(this),
+  formatDateTime: this.formatDateTime.bind(this),
+  getCheckboxClass: this.getCheckboxClass.bind(this)
     });
   }
 
