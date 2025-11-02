@@ -12,7 +12,8 @@ class JsonParserService {
     try {
       const rawData = await fs.readFile(filePath, 'utf8');
       const data = JSON.parse(rawData);
-      return this.structureInspectionData(data);
+      const inspectionData = data.inspection || data;
+      return this.structureInspectionData(inspectionData);
     } catch (error) {
       throw new Error(`Failed to parse inspection data: ${error.message}`);
     }
@@ -22,13 +23,13 @@ class JsonParserService {
     // Extract basic property info
     const property = {
       id: data.id,
-      address: data.address || 'Data not found in test data',
-      client: data.client || 'Data not found in test data',
-      inspector: data.inspector || 'Data not found in test data',
-      inspectionDate: data.inspection_date || new Date().toLocaleDateString(),
-      propertyType: data.property_type || 'Single Family Home',
-      yearBuilt: data.year_built || 'Data not found in test data',
-      squareFootage: data.square_footage || 'Data not found in test data'
+      address: data.address ? data.address.fullAddress : 'Data not found in test data',
+      client: data.clientInfo ? data.clientInfo.name : 'Data not found in test data',
+      inspector: data.inspector ? data.inspector.name : 'Data not found in test data',
+      inspectionDate: data.schedule ? data.schedule.date : new Date().getTime(),
+      propertyType: 'Single Family Home',
+      yearBuilt: 'Not available in data',
+      squareFootage: data.bookingFormData && data.bookingFormData.propertyInfo ? data.bookingFormData.propertyInfo.squareFootage : 'Data not found in test data'
     };
 
     // Process sections with hierarchical structure
@@ -58,7 +59,7 @@ class JsonParserService {
         id: section.id,
         name: section.name,
         order: section.order,
-        lineItems: this.processLineItems(section.line_items || [])
+        lineItems: this.processLineItems(section.lineItems || [])
       }));
   }
 

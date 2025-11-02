@@ -13,7 +13,9 @@ class ReportController {
     const startTime = Date.now();
     
     try {
-      const inputFile = req.body.inputFile || join(__dirname, '../../data/inspection.json');
+            const inputFile = req.body.inputFile 
+        ? path.resolve(process.cwd(), req.body.inputFile)
+        : join(__dirname, '../../data/inspection.json');
       const generateCustom = req.body.generateCustom !== false;
       
       // Parse inspection data
